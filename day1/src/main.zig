@@ -74,11 +74,13 @@ const CommandList = struct {
 const CommandExecutor = struct {
     deal: *Deal,
     zero_count: usize,
+    zero_cross_count: usize,
 
     pub fn init(deal: *Deal) CommandExecutor {
         return CommandExecutor{
             .deal = deal,
             .zero_count = 0,
+            .zero_cross_count = 0,
         };
     }
 
@@ -90,20 +92,53 @@ const CommandExecutor = struct {
 
     fn executeCommand(self: *CommandExecutor, command: Command) void {
         const steps: i32 = command.steps;
+        const old_value: i32 = self.deal.current_value;
+
         switch (command.direction) {
             .Right => {
                 // Moving right increases the value
-                const current: i32 = self.deal.current_value;
-                const new_value = @mod(current + steps, 100);
+                const new_value = @mod(old_value + steps, 100);
                 self.deal.current_value = @intCast(new_value);
+
+                // Count how many times dial points at zero during movement
+                // From old_value, moving right by steps:
+                // - First zero hit at (100 - old_value) steps if old_value > 0, or 0 steps if old_value == 0
+                // - Then every 100 steps after that
+                // Formula: how many multiples of 100 are in range (old_value, old_value + steps]
+                // Which is: floor((old_value + steps) / 100) - floor(old_value / 100)
+                // But since old_value is 0-99, floor(old_value / 100) = 0
+                // So it's: floor((old_value + steps) / 100)
+                const times_at_zero: i32 = @divFloor(old_value + steps, 100);
+                self.zero_cross_count += @intCast(times_at_zero);
             },
             .Left => {
                 // Moving left decreases the value (wraps from 0 to 99)
-                const current: i32 = self.deal.current_value;
-                const new_value = @mod(current - steps, 100);
+                const new_value = @mod(old_value - steps, 100);
                 self.deal.current_value = @intCast(new_value);
+
+                // Count how many times dial points at zero during movement
+                // From old_value, moving left by steps:
+                // - First zero hit at old_value steps (if steps >= old_value and old_value > 0)
+                //   or at 0 steps if old_value == 0
+                // - Then every 100 steps after that
+                // We need to count how many times we land on 0
+                // Going from old_value left by steps means values: old_value-1, old_value-2, ..., old_value-steps (mod 100)
+                // Zero is hit when (old_value - k) mod 100 == 0, i.e., k = old_value, old_value+100, old_value+200, ...
+                // For k in [1, steps]: count = floor((steps - old_value) / 100) + 1 if old_value <= steps, else 0
+                // But we need to handle old_value == 0 specially: first hit is at step 100, not step 0
+                if (old_value == 0) {
+                    // Starting at 0, going left: we hit 0 again at step 100, 200, etc.
+                    const times_at_zero: i32 = @divFloor(steps, 100);
+                    self.zero_cross_count += @intCast(times_at_zero);
+                } else if (steps >= old_value) {
+                    // We hit 0 at step = old_value, then again at old_value + 100, etc.
+                    const times_at_zero: i32 = @divFloor(steps - old_value, 100) + 1;
+                    self.zero_cross_count += @intCast(times_at_zero);
+                }
+                // If steps < old_value, we never reach 0
             },
         }
+
         // Count only when deal points exactly to zero after the command
         if (self.deal.current_value == 0) {
             self.zero_count += 1;
@@ -112,6 +147,10 @@ const CommandExecutor = struct {
 
     pub fn getZeroCount(self: *const CommandExecutor) usize {
         return self.zero_count;
+    }
+
+    pub fn getZeroCrossCount(self: *const CommandExecutor) usize {
+        return self.zero_cross_count;
     }
 };
 
@@ -156,5 +195,6 @@ pub fn main() !void {
     // try stdout.print("List of commands: {any}\n", .{commands.items()});
     // try stdout.print("Final deal value: {d}\n", .{deal.current_value});
     try stdout.print("Times at zero: {d}\n", .{executor.getZeroCount()});
+    try stdout.print("Times crossed zero: {d}\n", .{executor.getZeroCrossCount()});
     try stdout.flush();
 }
