@@ -14,6 +14,7 @@ A circular dial puzzle where we track how many times the dial points to zero aft
 > cd day1
 > zig build && ./zig-out/bin/day1
 Times at zero: XXXX
+Times crossed zero: XXXX
 ```
 
 ### Input
@@ -27,3 +28,32 @@ The dial has values 0-99 and wraps around (like a clock with 100 positions).
 ### Output
 
 The program outputs how many times the dial points exactly to zero after executing all commands.
+
+## Day 2
+
+Find invalid IDs within given ranges based on repeating digit patterns.
+
+### How to run
+
+```bash
+> cd day2
+> zig build && ./zig-out/bin/day2
+Part 1: XXXX
+Part 2: XXXX
+```
+
+### Input
+
+A comma-separated list of ID ranges in the format `start-end` (e.g., `11-22,95-115,998-1012`).
+
+### Rules
+
+**Part 1**: An ID is invalid if the first half of its digits equals the second half.
+- Examples: `11`, `1010`, `446446`, `1188511885`
+
+**Part 2**: An ID is invalid if it consists of any repeating sequence of digits (at least 2 repetitions).
+- Examples: `111` (1 repeated 3 times), `1010` (10 repeated 2 times), `565656` (56 repeated 3 times), `123123123` (123 repeated 3 times)
+
+### Output
+
+The program outputs the sum of all invalid IDs for each part.
