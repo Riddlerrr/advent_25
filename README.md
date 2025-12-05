@@ -4,18 +4,16 @@
 
 - Zig 0.15.x
 
+## How to run
+
+```bash
+> cd day<N>
+> zig build run
+```
+
 ## Day 1
 
 A circular dial puzzle where we track how many times the dial points to zero after executing movement commands.
-
-### How to run
-
-```bash
-> cd day1
-> zig build && ./zig-out/bin/day1
-Times at zero: XXXX
-Times crossed zero: XXXX
-```
 
 ### Input
 
@@ -32,15 +30,6 @@ The program outputs how many times the dial points exactly to zero after executi
 ## Day 2
 
 Find invalid IDs within given ranges based on repeating digit patterns.
-
-### How to run
-
-```bash
-> cd day2
-> zig build && ./zig-out/bin/day2
-Part 1: XXXX
-Part 2: XXXX
-```
 
 ### Input
 
@@ -62,15 +51,6 @@ The program outputs the sum of all invalid IDs for each part.
 
 Select batteries with maximum voltage from each row of a battery grid.
 
-### How to run
-
-```bash
-> cd day3
-> zig build && ./zig-out/bin/day3
-Part 1: XXXX
-Part 2: XXXX
-```
-
 ### Input
 
 Battery data is read from `src/batteries.txt`. Each line contains a sequence of digits where each digit represents the voltage of a battery.
@@ -89,3 +69,26 @@ Battery data is read from `src/batteries.txt`. Each line contains a sequence of 
 ### Output
 
 The program outputs the sum of all voltages for each part.
+
+## Day 4
+
+Remove lonely rolls from a map iteratively.
+
+### Input
+
+A map is read from `src/map.txt`. The map contains `@` characters representing rolls and other characters representing empty space.
+
+### Rules
+
+**Part 1**: Count rolls that have 3 or fewer neighboring rolls (in all 8 directions).
+
+**Part 2**: Iteratively remove all rolls with 3 or fewer neighbors until no more can be removed.
+- In each iteration, find all "lonely" rolls (≤3 neighbors)
+- Remove them all simultaneously
+- Repeat until no lonely rolls remain
+- Count total removed rolls across all iterations
+
+### Output
+
+- Part 1: Number of lonely rolls in the initial map
+- Part 2: Total number of rolls removed across all iterations
