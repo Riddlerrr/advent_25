@@ -1,5 +1,6 @@
 const std = @import("std");
 const day2 = @import("day2");
+const utils = @import("utils");
 
 const IdRange = struct {
     start: u64,
@@ -93,15 +94,8 @@ pub fn main() !void {
         sum_part2 += id;
     }
 
-    // Print results to stdout
-    const stdout = std.fs.File.stdout();
-    var buf: [64]u8 = undefined;
-
-    const part1_str = std.fmt.bufPrint(&buf, "Part 1: {d}\n", .{sum_part1}) catch return;
-    try stdout.writeAll(part1_str);
-
-    const part2_str = std.fmt.bufPrint(&buf, "Part 2: {d}\n", .{sum_part2}) catch return;
-    try stdout.writeAll(part2_str);
+    try utils.io.println("Part 1: {d}", .{sum_part1});
+    try utils.io.println("Part 2: {d}", .{sum_part2});
 }
 
 fn parseIds(allocator: std.mem.Allocator, input: []const u8) !IdRangeList {

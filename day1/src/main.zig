@@ -2,10 +2,6 @@ const std = @import("std");
 const day1 = @import("day1");
 const utils = @import("utils");
 
-var stdout_buffer: [1024]u8 = undefined;
-var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
-const stdout = &stdout_writer.interface;
-
 const CommandDirection = enum {
     Right,
     Left,
@@ -186,9 +182,8 @@ pub fn main() !void {
     var executor = CommandExecutor.init(&deal);
     executor.executeAll(&commands);
 
-    // try stdout.print("List of commands: {any}\n", .{commands.items()});
-    // try stdout.print("Final deal value: {d}\n", .{deal.current_value});
-    try stdout.print("Times at zero: {d}\n", .{executor.getZeroCount()});
-    try stdout.print("Times crossed zero: {d}\n", .{executor.getZeroCrossCount()});
-    try stdout.flush();
+    // try utils.io.println("List of commands: {any}", .{commands.items()});
+    // try utils.io.println("Final deal value: {d}", .{deal.current_value});
+    try utils.io.println("Times at zero: {d}", .{executor.getZeroCount()});
+    try utils.io.println("Times crossed zero: {d}", .{executor.getZeroCrossCount()});
 }
