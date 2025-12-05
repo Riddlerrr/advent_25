@@ -57,6 +57,13 @@ pub fn build(b: *std.Build) void {
     //
     // If neither case applies to you, feel free to delete the declaration you
     // don't need and to put everything under a single module.
+    // Get the utils dependency
+    const utils_dep = b.dependency("utils", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const utils_mod = utils_dep.module("utils");
+
     const exe = b.addExecutable(.{
         .name = "day1",
         .root_module = b.createModule(.{
@@ -79,6 +86,7 @@ pub fn build(b: *std.Build) void {
                 // can be extremely useful in case of collisions (which can happen
                 // importing modules from different packages).
                 .{ .name = "day1", .module = mod },
+                .{ .name = "utils", .module = utils_mod },
             },
         }),
     });

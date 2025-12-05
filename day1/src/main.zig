@@ -1,5 +1,6 @@
 const std = @import("std");
 const day1 = @import("day1");
+const utils = @import("utils");
 
 var stdout_buffer: [1024]u8 = undefined;
 var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
@@ -169,22 +170,15 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    // Read commands from file
-    const file = try std.fs.cwd().openFile("src/commands.txt", .{});
-    defer file.close();
-
-    const file_content = try file.readToEndAlloc(allocator, 1024 * 1024);
+    const file_content = try utils.file.readFileAlloc(allocator, "src/commands.txt");
     defer allocator.free(file_content);
 
     var commands = CommandList.init(allocator);
     defer commands.deinit();
 
-    var lines = std.mem.splitAny(u8, file_content, "\n\r");
+    var lines = utils.file.lines(file_content);
     while (lines.next()) |line| {
-        const trimmed = std.mem.trim(u8, line, " \t");
-        if (trimmed.len == 0) continue;
-
-        const command = Command.initFromCommandStr(trimmed);
+        const command = Command.initFromCommandStr(line);
         try commands.append(command);
     }
 
