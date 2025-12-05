@@ -57,3 +57,35 @@ A comma-separated list of ID ranges in the format `start-end` (e.g., `11-22,95-1
 ### Output
 
 The program outputs the sum of all invalid IDs for each part.
+
+## Day 3
+
+Select batteries with maximum voltage from each row of a battery grid.
+
+### How to run
+
+```bash
+> cd day3
+> zig build && ./zig-out/bin/day3
+Part 1: XXXX
+Part 2: XXXX
+```
+
+### Input
+
+Battery data is read from `src/batteries.txt`. Each line contains a sequence of digits where each digit represents the voltage of a battery.
+
+### Rules
+
+**Part 1**: Select 2 batteries from each row to maximize voltage.
+- Choose the first battery with the maximum digit value
+- Choose the second battery with the maximum digit value from positions **after** the first battery
+- Concatenate the two digits as a string to form the voltage (e.g., digits 9 and 8 → voltage 98)
+
+**Part 2**: Select 12 batteries from each row using the same greedy approach.
+- At each step, pick the maximum digit that still allows enough batteries to be selected from remaining positions
+- Concatenate all 12 digits to form the voltage
+
+### Output
+
+The program outputs the sum of all voltages for each part.
