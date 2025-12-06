@@ -92,3 +92,28 @@ A map is read from `src/map.txt`. The map contains `@` characters representing r
 
 - Part 1: Number of lonely rolls in the initial map
 - Part 2: Total number of rolls removed across all iterations
+
+## Day 5
+
+Determine fresh ingredients based on ID ranges.
+
+### Input
+
+Data is read from `db.txt`. The file contains two sections separated by a blank line:
+1. Fresh ID ranges in format `start-end` (inclusive)
+2. Ingredient IDs to check
+
+### Rules
+
+**Part 1**: Count how many of the listed ingredient IDs fall within any fresh range.
+- An ID is fresh if it falls into at least one range
+- Ranges can overlap
+
+**Part 2**: Count the total number of unique fresh IDs across all ranges.
+- Merge overlapping/adjacent ranges to avoid double-counting
+- Example: ranges `3-5` and `4-7` together cover IDs 3,4,5,6,7 = 5 unique IDs
+
+### Output
+
+- Part 1: Number of fresh ingredients from the ID list
+- Part 2: Total count of unique fresh IDs across all ranges
