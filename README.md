@@ -117,3 +117,40 @@ Data is read from `db.txt`. The file contains two sections separated by a blank 
 
 - Part 1: Number of fresh ingredients from the ID list
 - Part 2: Total count of unique fresh IDs across all ranges
+
+## Day 8
+
+Connect junction boxes with wires to form circuits based on proximity.
+
+### Input
+
+Coordinates of boxes are read from `boxes.txt`. Each line contains `X,Y,Z` coordinates.
+
+### Rules
+
+**Part 1**: Connect the 1000 closest pairs of boxes.
+- Calculate Euclidean distance between all pairs.
+- Sort connections by distance.
+- Connect the top 1000 pairs.
+- Calculate the product of the sizes of the three largest resulting circuits.
+
+**Part 2**: Connect boxes until they form a single circuit (Minimum Spanning Tree).
+- Continue connecting closest pairs until all boxes are in the same component.
+- Multiply the X coordinates of the two boxes connected by the final wire that merges everything into one circuit.
+
+### Visualization
+
+A Python script `visualize.py` is provided to visualize the connection process in 3D.
+
+Requirements: `python3`, `matplotlib`, `numpy`.
+
+```bash
+# Visualize Part 1 (1000 closest connections)
+python3 visualize.py part1
+
+# Visualize Part 2 (Building the MST)
+python3 visualize.py part2
+
+# Save as GIF
+python3 visualize.py part1 --save
+```
