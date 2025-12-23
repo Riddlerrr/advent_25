@@ -218,6 +218,19 @@ pub const Map = struct {
         const width = x_unique.items.len;
         const height = y_unique.items.len;
 
+        // Create coordinate
+        var x_index_map = std.AutoHashMap(i64, usize).init(self.allocator);
+        defer x_index_map.deinit();
+        var y_index_map = std.AutoHashMap(i64, usize).init(self.allocator);
+        defer y_index_map.deinit();
+
+        for (x_unique.items, 0..) |x, idx| {
+            try x_index_map.put(x, idx);
+        }
+        for (y_unique.items, 0..) |y, idx| {
+            try y_index_map.put(y, idx);
+        }
+
         // Build validity grid
         var grid = try Grid.init(self.allocator, width, height);
         defer grid.deinit();
@@ -243,10 +256,10 @@ pub const Map = struct {
                 const rect_max_y = @max(tile_a.y, tile_b.y);
 
                 // Find compressed coordinates
-                const x1_idx = std.mem.indexOfScalar(i64, x_unique.items, rect_min_x) orelse continue;
-                const x2_idx = std.mem.indexOfScalar(i64, x_unique.items, rect_max_x) orelse continue;
-                const y1_idx = std.mem.indexOfScalar(i64, y_unique.items, rect_min_y) orelse continue;
-                const y2_idx = std.mem.indexOfScalar(i64, y_unique.items, rect_max_y) orelse continue;
+                const x1_idx = x_index_map.get(rect_min_x) orelse continue;
+                const x2_idx = x_index_map.get(rect_max_x) orelse continue;
+                const y1_idx = y_index_map.get(rect_min_y) orelse continue;
+                const y2_idx = y_index_map.get(rect_max_y) orelse continue;
 
                 // Check if all cells in compressed rectangle are valid
                 const sum = sat.query(x1_idx, y1_idx, x2_idx, y2_idx);
